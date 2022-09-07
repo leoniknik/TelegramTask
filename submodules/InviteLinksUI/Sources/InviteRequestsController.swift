@@ -377,7 +377,7 @@ public func inviteRequestsController(context: AccountContext, updatedPresentatio
         }
     }
     navigateToProfileImpl = { [weak controller] peer in
-        if let navigationController = controller?.navigationController as? NavigationController, let controller = context.sharedContext.makePeerInfoController(context: context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .generic, avatarInitiallyExpanded: peer.largeProfileImage != nil, fromChat: false, requestsContext: nil) {
+        if let navigationController = controller?.navigationController as? NavigationController, let controller = context.sharedContext.makePeerInfoController(context: context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: nil, peer: peer._asPeer(), mode: .generic, avatarInitiallyExpanded: peer.largeProfileImage != nil, fromChat: false, requestsContext: nil) {
             navigationController.pushViewController(controller)
         }
     }

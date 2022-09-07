@@ -869,7 +869,7 @@ public func groupStatsController(context: AccountContext, updatedPresentationDat
             let _ = (context.account.postbox.loadedPeerWithId(peerId)
             |> take(1)
             |> deliverOnMainQueue).start(next: { peer in
-                if let controller = context.sharedContext.makePeerInfoController(context: context, updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+                if let controller = context.sharedContext.makePeerInfoController(context: context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
                     navigationController.pushViewController(controller)
                 }
             })

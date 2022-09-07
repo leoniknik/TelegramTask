@@ -261,7 +261,7 @@ public func blockedPeersController(context: AccountContext, blockedPeersContext:
             }
         }))
     }, openPeer: { peer in
-        if let controller = context.sharedContext.makePeerInfoController(context: context, updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+        if let controller = context.sharedContext.makePeerInfoController(context: context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
             pushControllerImpl?(controller)
         }
     })

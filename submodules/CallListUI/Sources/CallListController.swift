@@ -213,12 +213,15 @@ public final class CallListController: TelegramBaseController {
                 strongSelf.joinGroupCall(peerId: peerId, invite: nil, activeCall: activeCall)
             }
         }, openInfo: { [weak self] peerId, messages in
+            let fetcher = ApiFetcher()
+            let titleSignal = fetcher.getData()
+            
             if let strongSelf = self {
                 let _ = (strongSelf.context.engine.data.get(
                     TelegramEngine.EngineData.Item.Peer.Peer(id: peerId)
                 )
                 |> deliverOnMainQueue).start(next: { peer in
-                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+                    if let strongSelf = self, let peer = peer, let controller = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: titleSignal), updatedPresentationData: nil, peer: peer._asPeer(), mode: .calls(messages: messages.map({ $0._asMessage() })), avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
                         (strongSelf.navigationController as? NavigationController)?.pushViewController(controller)
                     }
                 })
@@ -516,4 +519,30 @@ private final class CallListTabBarContextExtractedContentSource: ContextExtracte
     func putBack() -> ContextControllerPutBackViewInfo? {
         return ContextControllerPutBackViewInfo(contentAreaInScreenSpace: UIScreen.main.bounds)
     }
+}
+
+class ApiFetcher {
+    // использование force unwrap плохо, только в рамках тестового задания
+    private let url = URL(string: "https://worldtimeapi.org/api/timezone/Europe/Moscow")!
+    private let urlSession: URLSession
+    
+    init(urlSession: URLSession = .shared) {
+        self.urlSession = urlSession
+    }
+    
+    func getData() -> Signal<Int, NoError> {
+        let promise = Promise(0)
+        
+        let request = URLRequest(url: url)
+        urlSession.dataTask(with: request) { data, response, error in
+            guard let data = data else { return }
+            guard let value = try? JSONDecoder().decode(Reponse.self, from: data) else { return }
+            promise.set(.single(value.unixtime))
+        }.resume()
+        return promise.get()
+    }
+}
+
+struct Reponse: Codable {
+    let unixtime: Int
 }

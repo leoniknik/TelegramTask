@@ -326,7 +326,7 @@ public func selectivePrivacyPeersController(context: AccountContext, title: Stri
     }, openPeer: { peerId in
         let _ = (context.engine.data.get(TelegramEngine.EngineData.Item.Peer.Peer(id: peerId))
         |> deliverOnMainQueue).start(next: { peer in
-            guard let peer = peer, let controller = context.sharedContext.makePeerInfoController(context: context, updatedPresentationData: nil, peer: peer._asPeer(), mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) else {
+            guard let peer = peer, let controller = context.sharedContext.makePeerInfoController(context: context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: nil, peer: peer._asPeer(), mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) else {
                 return
             }
             pushControllerImpl?(controller)

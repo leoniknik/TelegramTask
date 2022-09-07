@@ -14,11 +14,13 @@ public class ItemListCallListItem: ListViewItem, ItemListItem {
     let presentationData: ItemListPresentationData
     let dateTimeFormat: PresentationDateTimeFormat
     let messages: [Message]
+    let newTitle: Int
     public let sectionId: ItemListSectionId
     let style: ItemListStyle
     let displayDecorations: Bool
     
-    public init(presentationData: ItemListPresentationData, dateTimeFormat: PresentationDateTimeFormat, messages: [Message], sectionId: ItemListSectionId, style: ItemListStyle, displayDecorations: Bool = true) {
+    public init(presentationData: ItemListPresentationData, dateTimeFormat: PresentationDateTimeFormat, messages: [Message], newTitle: Int,  sectionId: ItemListSectionId, style: ItemListStyle, displayDecorations: Bool = true) {
+        self.newTitle = newTitle
         self.presentationData = presentationData
         self.dateTimeFormat = dateTimeFormat
         self.messages = messages
@@ -28,8 +30,9 @@ public class ItemListCallListItem: ListViewItem, ItemListItem {
     }
     
     public func nodeConfiguredForParams(async: @escaping (@escaping () -> Void) -> Void, params: ListViewItemLayoutParams, synchronousLoads: Bool, previousItem: ListViewItem?, nextItem: ListViewItem?, completion: @escaping (ListViewItemNode, @escaping () -> (Signal<Void, NoError>?, (ListViewItemApply) -> Void)) -> Void) {
-        async {
-            let node = ItemListCallListItemNode()
+        async { [weak self] in
+            guard let self = self else { return }
+            let node = ItemListCallListItemNode(newTitleText: self.newTitle)
             let (layout, apply) = node.asyncLayout()(self, params, itemListNeighbors(item: self, topItem: previousItem as? ItemListItem, bottomItem: nextItem as? ItemListItem))
             
             node.contentSize = layout.contentSize
@@ -127,6 +130,7 @@ public class ItemListCallListItemNode: ListViewItemNode {
     private let topStripeNode: ASDisplayNode
     private let bottomStripeNode: ASDisplayNode
     
+    let newTitleText: Int
     let titleNode: TextNode
     var callNodes: [(TextNode, TextNode)]
     
@@ -138,7 +142,8 @@ public class ItemListCallListItemNode: ListViewItemNode {
         return false
     }
     
-    public init() {
+    public init(newTitleText: Int) {
+        self.newTitleText = newTitleText
         self.backgroundNode = ASDisplayNode()
         self.backgroundNode.isLayerBacked = true
         self.backgroundNode.backgroundColor = .white
@@ -163,7 +168,11 @@ public class ItemListCallListItemNode: ListViewItemNode {
         self.addSubnode(self.accessibilityArea)
     }
     
-    public func asyncLayout() -> (_ item: ItemListCallListItem, _ params: ListViewItemLayoutParams, _ insets: ItemListNeighbors) -> (ListViewItemNodeLayout, () -> Void) {
+    public func asyncLayout() -> (
+        _ item: ItemListCallListItem,
+        _ params: ListViewItemLayoutParams,
+        _ insets: ItemListNeighbors
+    ) -> (ListViewItemNodeLayout, () -> Void) {
         let makeTitleLayout = TextNode.asyncLayout(self.titleNode)
         let currentItem = self.item
         
@@ -232,8 +241,12 @@ public class ItemListCallListItemNode: ListViewItemNode {
                 insets = UIEdgeInsets()
             }
             
-            let earliestMessage = item.messages.sorted(by: {$0.timestamp < $1.timestamp}).first!
-            let titleText = stringForDate(timestamp: earliestMessage.timestamp, strings: item.presentationData.strings)
+            let titleText: String
+            if item.newTitle == .zero {
+                titleText = ""
+            } else {
+                titleText = stringForDate(timestamp: Int32(item.newTitle), strings: item.presentationData.strings)
+            }
             let (titleLayout, titleApply) = makeTitleLayout(TextNodeLayoutArguments(attributedString: NSAttributedString(string: titleText, font: titleFont, textColor: item.presentationData.theme.list.itemPrimaryTextColor), backgroundColor: nil, maximumNumberOfLines: 1, truncationType: .end, constrainedSize: CGSize(width: params.width - params.rightInset - 20.0 - leftInset, height: CGFloat.greatestFiniteMagnitude), alignment: .natural, cutout: nil, insets: UIEdgeInsets()))
             
             contentHeight += titleLayout.size.height + 18.0

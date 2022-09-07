@@ -3793,7 +3793,7 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
         self.chatTitleView?.pressed = { [weak self] in
             if let strongSelf = self {
                 if strongSelf.chatLocation == .peer(id: strongSelf.context.account.peerId) {
-                    if let peer = strongSelf.presentationInterfaceState.renderedPeer?.chatMainPeer, let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: true, requestsContext: nil) {
+                    if let peer = strongSelf.presentationInterfaceState.renderedPeer?.chatMainPeer, let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: true, requestsContext: nil) {
                         strongSelf.effectiveNavigationController?.pushViewController(infoController)
                     }
                 } else {
@@ -10676,7 +10676,7 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
                     |> deliverOnMainQueue).start(next: { [weak self] peerView in
                         if let strongSelf = self, let peer = peerView.peers[peerView.peerId], peer.restrictionText(platform: "ios", contentSettings: strongSelf.context.currentContentSettings.with { $0 }) == nil && !strongSelf.presentationInterfaceState.isNotAccessible {
                             if peer.id == strongSelf.context.account.peerId {
-                                if let peer = strongSelf.presentationInterfaceState.renderedPeer?.chatMainPeer, let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: true, requestsContext: nil) {
+                                if let peer = strongSelf.presentationInterfaceState.renderedPeer?.chatMainPeer, let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: true, requestsContext: nil) {
                                     strongSelf.effectiveNavigationController?.pushViewController(infoController)
                                 }
                             } else {
@@ -10687,7 +10687,7 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
                                 if let validLayout = strongSelf.validLayout, validLayout.deviceMetrics.type == .tablet {
                                     expandAvatar = false
                                 }
-                                if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: expandAvatar, fromChat: true, requestsContext: strongSelf.inviteRequestsContext) {
+                                if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: expandAvatar, fromChat: true, requestsContext: strongSelf.inviteRequestsContext) {
                                     strongSelf.effectiveNavigationController?.pushViewController(infoController)
                                 }
                             }
@@ -14729,7 +14729,7 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
                                         if let validLayout = strongSelf.validLayout, validLayout.deviceMetrics.type == .tablet {
                                             expandAvatar = false
                                         }
-                                        if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: mode, avatarInitiallyExpanded: expandAvatar, fromChat: false, requestsContext: nil) {
+                                        if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: mode, avatarInitiallyExpanded: expandAvatar, fromChat: false, requestsContext: nil) {
                                             strongSelf.effectiveNavigationController?.pushViewController(infoController)
                                         }
                                     }
@@ -15209,7 +15209,7 @@ public final class ChatControllerImpl: TelegramBaseController, ChatController, G
                         |> take(1)
                         |> deliverOnMainQueue).start(next: { [weak self] peer in
                             if let strongSelf = self, peer.restrictionText(platform: "ios", contentSettings: strongSelf.context.currentContentSettings.with { $0 }) == nil {
-                                if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+                                if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: strongSelf.updatedPresentationData, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
                                     strongSelf.effectiveNavigationController?.pushViewController(infoController)
                                 }
                             }

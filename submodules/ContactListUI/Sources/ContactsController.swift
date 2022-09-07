@@ -627,7 +627,7 @@ public class ContactsController: ViewController {
                             }
                             if let peer = peer {
                                 DispatchQueue.main.async {
-                                    if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
+                                    if let infoController = strongSelf.context.sharedContext.makePeerInfoController(context: strongSelf.context, titleData: (initial: 0, signal: Signal.never()), updatedPresentationData: nil, peer: peer, mode: .generic, avatarInitiallyExpanded: false, fromChat: false, requestsContext: nil) {
                                         if let navigationController = strongSelf.context.sharedContext.mainWindow?.viewController as? NavigationController {
                                             navigationController.pushViewController(infoController)
                                         }
